@@ -73,9 +73,17 @@
     "copyright": "Copyright (c) 2026 runesleo",
     "status": "ACTIVE"
   },
+  "public_repository": {
+    "name_with_owner": "runesleo/tapeout-harvester",
+    "url": "https://github.com/runesleo/tapeout-harvester",
+    "visibility": "PUBLIC",
+    "default_branch": "main",
+    "initial_public_commit": "46b4d6061d03c90e9c5176e89d2c411c6eecd3c4",
+    "remote_readback": "PASS"
+  },
   "public_release_gates": {
     "final_license_confirmation": "APPROVED_AND_APPLIED",
-    "public_github_push": "APPROVED_PENDING_EXECUTION",
+    "public_github_push": "PERFORMED_AND_READBACK_VERIFIED",
     "public_announcement": "NOT_PERFORMED"
   }
 }

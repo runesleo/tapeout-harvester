@@ -17,5 +17,5 @@
 - [x] Owner approved MIT License and public GitHub publication.
 - [x] MIT LICENSE activated with copyright holder `runesleo`.
 - [x] Official open-source preflight rerun after LICENSE activation: **PASS (exit 0)**.
-- [ ] Public GitHub repository created / pushed and remote readback verified.
+- [x] Public GitHub repository `runesleo/tapeout-harvester` created / pushed; PUBLIC/main remote readback verified.
 - [ ] Optional public announcement separately previewed and explicitly confirmed.
