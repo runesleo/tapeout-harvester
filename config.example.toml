@@ -1,0 +1,61 @@
+# Copy to config.toml. This file is intentionally NOT runnable as-is.
+# Replace every EXAMPLE address/key with current official values you independently verify.
+# Economic thresholds below are examples, not recommendations or the author's production settings.
+
+[network]
+chain_id = 56
+rpc_urls = ["https://bsc-dataseed.binance.org"]
+wallet = "0x1111111111111111111111111111111111111111" # EXAMPLE ONLY
+
+[contracts]
+mining = "0x2222222222222222222222222222222222222222" # EXAMPLE ONLY
+reward_token = "0x3333333333333333333333333333333333333333" # EXAMPLE ONLY
+reward_decimals = 8
+
+[mining]
+miner_keys = ["0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"] # EXAMPLE ONLY
+
+[harvest]
+# Choose this from your own reward rate, token price, gas, and risk tolerance.
+minimum_claim = "999999"
+# 0 = claim only. Set >0 only after filling the sell-route fields described in README.
+sell_fraction = "0"
+check_interval_seconds = 900
+
+[safety]
+# EXAMPLE guardrails. Review them for the current market and route before enabling live mode.
+target_slippage_bps = 25
+hard_slippage_bps = 75
+quote_max_age_seconds = 15
+gas_reserve_native = "0.01"
+max_gas_native_per_cycle = "0.001"
+tx_receipt_timeout_seconds = 120
+# Do not progress to the next economic stage until this many canonical confirmations are visible.
+min_confirmations = 3
+
+[runtime]
+receipt_dir = "./receipts"
+state_path = "./state/state.json"
+lock_path = "./state/harvester.lock"
+# Live mode requires BOTH this flag and the CLI --live switch.
+live_enabled = false
+
+# Optional sell mode (required only when sell_fraction > 0):
+# [contracts]
+# router = "0x..."
+# allowed_routers = ["0x..."]
+# quoter = "0x..."
+# pool = "0x..."
+# fee = 2500
+#
+# [destination]
+# token = "0x..."                 # stablecoin or wrapped native token
+# decimals = 18
+# unwrap_native = false
+# wrapped_native_token = "0x..."  # required if unwrap_native=true
+#
+# Optional live signer (never place passwords/private keys here):
+# [signer]
+# keystore_path = "./wallet.json"
+# keyring_service = "tapeout-harvester"
+# keyring_account = "default"

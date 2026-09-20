@@ -1,0 +1,21 @@
+# Public Release Checklist
+
+- [x] Production source entry identified and compared at behavior level.
+- [x] Author wallet/miner inventory/private paths/capital policy excluded.
+- [x] Economic thresholds and route choices are explicit config, not production defaults.
+- [x] Dry-run default + dual live gate.
+- [x] Sequential claim / optional sell / receipt / no-rebroadcast state machine covered by tests.
+- [x] Independent Codex pass 1: 8 blockers reproduced and remediated.
+- [x] Independent Codex pass 2: 4 blockers reproduced and remediated.
+- [x] Independent Codex pass 3: 3 blockers reproduced and remediated.
+- [x] Final blocker-focused Codex review: **0 blockers**.
+- [x] Current dependency-backed suite: **65/65 PASS, 0 skipped**.
+- [x] Current compile check: PASS.
+- [x] Current local security preflight: PASS.
+- [x] Final RC2 wheel + source distribution built locally and hashed.
+- [x] Final source manifest refreshed and verified after documentation freeze.
+- [x] Owner approved MIT License and public GitHub publication.
+- [x] MIT LICENSE activated with copyright holder `runesleo`.
+- [x] Official open-source preflight rerun after LICENSE activation: **PASS (exit 0)**.
+- [ ] Public GitHub repository created / pushed and remote readback verified.
+- [ ] Optional public announcement separately previewed and explicitly confirmed.

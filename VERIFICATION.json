@@ -1,0 +1,81 @@
+{
+  "schema": "tapeout-harvester-verification/v3",
+  "version": "0.1.0rc2",
+  "verified_at": "2026-09-20",
+  "production_derivation": {
+    "source_read_via_mcpx": true,
+    "source_sha256": "1d6c021eb8c1d8dbc7fea976d757959bd818e4e9af96525615fb6044fc12cbe4",
+    "source_lines": 1996,
+    "source_bytes": 74035,
+    "production_source_modified": false,
+    "fresh_live_funds_execution_from_public_rc": false
+  },
+  "final_release_environment": {
+    "python": "3.11.4",
+    "web3": "7.16.0",
+    "eth_account": "0.14.0",
+    "keyring": "25.7.0"
+  },
+  "tests": {
+    "discovered": 65,
+    "passed": 65,
+    "skipped": 0,
+    "status": "PASS"
+  },
+  "compileall": "PASS",
+  "local_security_preflight": "PASS",
+  "independent_review": {
+    "pass1_blockers": 8,
+    "pass2_blockers": 4,
+    "pass3_blockers": 3,
+    "final_blocker_focused_blockers": 0,
+    "final_warnings": 4,
+    "status": "PASS_WITH_WARNINGS",
+    "receipt": "REVIEW-codex-pass.md"
+  },
+  "additional_fault_injection": {
+    "save_boundary_cases": 72,
+    "duplicate_claim_swap_unwrap": 0,
+    "unrelated_wrapped_inventory_consumed": 0
+  },
+  "build_artifacts": {
+    "wheel": {
+      "filename": "tapeout_harvester-0.1.0rc2-py3-none-any.whl",
+      "sha256": "a1642749dbd6315e92539198167bb0b9831aece55a4aeb64f1594991c2dd85e5",
+      "status": "PASS"
+    },
+    "sdist": {
+      "filename": "tapeout_harvester-0.1.0rc2.tar.gz",
+      "sha256": "6f5873fd47622c3cbebe56fb6ba5f8c6621a8e5e46c1a1ce55742db3966cac94",
+      "status": "PASS"
+    }
+  },
+  "dependency_policy": {
+    "web3": ">=7.12,<8",
+    "eth-account": ">=0.13.7,<0.15",
+    "keyring_optional": ">=25,<26"
+  },
+  "official_opensource_preflight": {
+    "status": "PASS",
+    "exit_code": 0,
+    "passed_checks": [
+      "no_private_path_patterns",
+      "no_task_ids",
+      "readme_present",
+      "readme_zh_present",
+      "env_gitignored",
+      "no_obvious_git_log_secrets"
+    ],
+    "only_failure": null
+  },
+  "license": {
+    "spdx": "MIT",
+    "copyright": "Copyright (c) 2026 runesleo",
+    "status": "ACTIVE"
+  },
+  "public_release_gates": {
+    "final_license_confirmation": "APPROVED_AND_APPLIED",
+    "public_github_push": "APPROVED_PENDING_EXECUTION",
+    "public_announcement": "NOT_PERFORMED"
+  }
+}

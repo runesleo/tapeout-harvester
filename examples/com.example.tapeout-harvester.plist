@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.example.tapeout-harvester</string>
+  <key>ProgramArguments</key><array>
+    <string>/ABSOLUTE/PATH/.venv/bin/tapeout-harvester</string>
+    <string>--config</string><string>/ABSOLUTE/PATH/config.toml</string>
+    <string>watch</string>
+    <!-- Add --live only after an explicit user decision. -->
+  </array>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>/ABSOLUTE/PATH/harvester.stdout.log</string>
+  <key>StandardErrorPath</key><string>/ABSOLUTE/PATH/harvester.stderr.log</string>
+</dict></plist>

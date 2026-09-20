@@ -1,0 +1,14 @@
+[Unit]
+Description=TapeOut Harvester (dry-run example)
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/ABSOLUTE/PATH/tapeout-harvester
+ExecStart=/ABSOLUTE/PATH/.venv/bin/tapeout-harvester --config /ABSOLUTE/PATH/config.toml watch
+Restart=on-failure
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
