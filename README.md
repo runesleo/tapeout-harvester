@@ -2,7 +2,7 @@
 
 A fail-closed, locally signed reward harvester for TapeOut/BEM. It can **claim rewards only** or, when explicitly configured, **claim and swap a chosen fraction** through an allowlisted V3 route.
 
-> Release candidate: `0.1.0rc2`. Dry-run is the default. Live execution requires **both** `runtime.live_enabled = true` and the CLI `--live` flag.
+> Local release candidate: `0.1.0rc3` (unreleased). Dry-run is the default. Live execution requires **both** `runtime.live_enabled = true` and the CLI `--live` flag.
 
 [中文说明](README.zh.md) · [AI setup guide](AI_SETUP.md) · [Security](SECURITY.md)
 
@@ -21,6 +21,8 @@ A fail-closed, locally signed reward harvester for TapeOut/BEM. It can **claim r
 - Cumulative worst-case gas commitment across the cycle, including reserved cleanup gas.
 - A stable chain+wallet local lock plus a nonce re-check immediately before every signature.
 - Encrypted JSON keystore + approved OS keyring backend; no plaintext private-key config.
+- RPC candidates must pass a representative TapeOut `pending` read before selection; `watch` reselects every cycle.
+- Durable watch heartbeat plus a read-only `doctor` command for stale-daemon/RPC/state diagnosis.
 
 ## How it works
 
@@ -138,7 +140,15 @@ If a receipt is missing or non-canonical, the engine keeps the known tx hash and
 tapeout-harvester --config /absolute/path/config.toml watch
 ```
 
-Without `--live`, watch mode remains dry-run.
+Without `--live`, watch mode remains dry-run. Each watch cycle creates a fresh adapter and re-checks the configured RPC list using an actual TapeOut `pending` call before choosing a provider.
+
+Every completed watch cycle writes a redacted heartbeat next to the state journal. To inspect RPC, state and watch freshness without loading the signer or broadcasting anything:
+
+```bash
+tapeout-harvester --config /absolute/path/config.toml doctor
+```
+
+A stale, error, blocked-cycle heartbeat, or persisted `BLOCKED_SAFE` journal returns a degraded status. Heartbeat writes are serialized separately so concurrent watchers cannot corrupt the shared heartbeat temp file. No heartbeat yet is reported as `NOT_OBSERVED`, which is not treated as a failure when the journal itself is healthy.
 
 The stable chain+wallet lock coordinates **this tool's local instances across config directories**. It cannot lock unrelated wallet apps, bots or processes. The signer therefore re-checks the wallet nonce immediately before every signature and fails closed if another writer has moved it. Use one authoritative `state_path` per chain + wallet; the wallet lock does not automatically merge or discover separate journals.
 
@@ -150,19 +160,19 @@ The stable chain+wallet lock coordinates **this tool's local instances across co
 - A pre-existing exact allowance not created by this cycle is not silently claimed as tool-owned state and may remain after a failed swap.
 - If cleanup itself is unknown or fails, the engine stays blocked; it does not keep trading.
 
-## Verified in RC2
+## Verified in local RC3 candidate
 
-The final dependency-backed suite contains **65 tests**:
+The local dependency-backed suite contains **100 tests**:
 
 ```text
 Python 3.11.4
 web3 7.16.0
 eth-account 0.14.0
-keyring 25.7.0
-65/65 PASS, 0 skipped
+keyring optional surface tested with keyring installed
+100/100 PASS, 0 skipped
 ```
 
-The suite includes dependency-backed adapter checks plus state-machine, restart/unknown-outcome, config, signer, durability, filesystem-lock and security-preflight coverage. The final independent Codex blocker-focused review returned **Blockers: None** after earlier passes reproduced and remediated 8, then 4, then 3 blockers. See `REVIEW-codex-pass.md` for the review receipt and remaining warnings.
+The suite includes dependency-backed adapter checks plus state-machine, restart/unknown-outcome, config, signer, durability, filesystem-lock and security-preflight coverage. The RC2 engine baseline previously completed an independent Codex blocker-focused review with **Blockers: None**. Nine GPT-6 Astra/xhigh RC3 review passes found fifteen P2 diagnosis/health issues in total. The ninth pass bound heartbeat health to the watcher's startup configuration fingerprint so doctor cannot treat a stale worker running old policy as healthy. All fifteen findings are remediated with focused regressions and the full 100-test suite passing. The final GPT-6 Astra/xhigh read-only rerun found no actionable regressions.
 
 Run:
 
@@ -172,7 +182,7 @@ python -m unittest discover -s tests -v
 
 See `VERIFICATION.json` and `REVIEW-codex-pass.md` for exact gates and independent review status.
 
-## Known limitations / operational boundaries (`0.1.0rc2`)
+## Known limitations / operational boundaries (`0.1.0rc3`)
 
 - Cleanup gas is bounded. A sufficiently large later fee spike can strand a revoke and require manual revocation; the engine remains blocked rather than continuing to trade.
 - Use **one authoritative state journal per chain + wallet**. A second `state_path` is not automatically reconciled with an unresolved first journal.
@@ -183,7 +193,7 @@ See `VERIFICATION.json` and `REVIEW-codex-pass.md` for exact gates and independe
 - Contract addresses are intentionally not embedded.
 - The local wallet lock cannot coordinate unrelated wallet software; nonce re-check is the fail-closed fallback.
 - Transaction attribution relies on standard ERC-20 `Transfer` and wrapped-native `Withdrawal(address,uint256)` event semantics.
-- RC2 has unit/synthetic + real-library compatibility verification, but **no fresh live-funds execution from the public RC**.
+- RC3 is currently an **unreleased local candidate**. It has unit/synthetic + real-library verification; no rc3 public release or fresh live-funds execution has occurred.
 - web3.py v8 remains unverified.
 - Licensed under the MIT License. Public GitHub publication is owner-approved and verified separately from code safety.
 
@@ -192,7 +202,6 @@ See `VERIFICATION.json` and `REVIEW-codex-pass.md` for exact gates and independe
 - Fork/read-only-chain adapter fixtures using current official contracts.
 - Additional local signer surfaces without weakening secret isolation.
 - Multiple verified route adapters without becoming a generic trading bot.
-- Stronger health/observability packaging for launchd/systemd.
 
 ## About
 

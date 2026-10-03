@@ -1,21 +1,33 @@
-# Public Release Checklist
+# RC3 release checklist
 
-- [x] Production source entry identified and compared at behavior level.
-- [x] Author wallet/miner inventory/private paths/capital policy excluded.
-- [x] Economic thresholds and route choices are explicit config, not production defaults.
-- [x] Dry-run default + dual live gate.
-- [x] Sequential claim / optional sell / receipt / no-rebroadcast state machine covered by tests.
-- [x] Independent Codex pass 1: 8 blockers reproduced and remediated.
-- [x] Independent Codex pass 2: 4 blockers reproduced and remediated.
-- [x] Independent Codex pass 3: 3 blockers reproduced and remediated.
-- [x] Final blocker-focused Codex review: **0 blockers**.
-- [x] Current dependency-backed suite: **65/65 PASS, 0 skipped**.
+- [x] RC3 scope limited to generic reliability/observability; no production price bands, wallet inventory, reinvest rules, or capital-allocation policy copied into public code.
+- [x] RPC selection requires a representative TapeOut `pending` read, not only chainId/latest block.
+- [x] `watch` rebuilds its adapter each cycle.
+- [x] Durable redacted heartbeat added.
+- [x] Read-only `doctor` added; it does not load the signer or broadcast.
+- [x] Existing RC2 state-machine / unknown-outcome / no-rebroadcast safety tests retained.
+- [x] Current dependency-backed suite after review remediation: **100/100 PASS, 0 skipped**.
 - [x] Current compile check: PASS.
 - [x] Current local security preflight: PASS.
-- [x] Final RC2 wheel + source distribution built locally and hashed.
-- [x] Final source manifest refreshed and verified after documentation freeze.
-- [x] Owner approved MIT License and public GitHub publication.
-- [x] MIT LICENSE activated with copyright holder `runesleo`.
-- [x] Official open-source preflight rerun after LICENSE activation: **PASS (exit 0)**.
-- [x] Public GitHub repository `runesleo/tapeout-harvester` created / pushed; PUBLIC/main remote readback verified.
-- [ ] Optional public announcement separately previewed and explicitly confirmed.
+- [x] Real TapeOut chain read-only doctor smoke: PASS.
+- [x] Real-chain fallback smoke with intentionally unreachable first RPC: PASS.
+- [x] RC3 wheel + source distribution built locally and SHA256 hashed.
+- [x] Packaged wheel installed into an isolated target and imported as `0.1.0rc3`.
+- [x] Packaged-wheel real-chain doctor/fallback smoke: PASS.
+- [x] Source manifest refreshed after candidate documentation freeze.
+- [x] RC2 core execution baseline prior independent review: **0 blockers**.
+- [x] First GPT-6 Astra/xhigh RC3 review completed: 4 P2 findings, all remediated with regression tests.
+- [x] Second GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 finding, remediated with regression tests.
+- [x] Third GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 inflight config-identity finding, remediated with regression tests.
+- [x] Fourth GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 unresolved-receipt false-OK doctor finding, remediated with regression tests.
+- [x] Fifth GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 finalized-receipt attribution false-OK doctor finding, remediated with regression tests.
+- [x] Sixth GPT-6 Astra/xhigh RC3 review completed: 2 additional P2 doctor consistency findings (journal snapshot race + accepted claim receipt prerequisite revalidation), remediated with regression tests.
+- [x] Seventh GPT-6 Astra/xhigh RC3 review completed: 2 additional P2 doctor consistency findings (POST_SWAP accepted swap receipt revalidation + heartbeat freshness after slow inflight diagnosis), remediated with regression tests.
+- [x] Eighth GPT-6 Astra/xhigh RC3 review completed: 2 additional P2 monitoring findings (current reward/wrapped balance prerequisites + heartbeat path collision across state suffixes), remediated with regression tests.
+- [x] Ninth GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 stale-watcher configuration identity finding, remediated by binding heartbeat health to the watcher configuration fingerprint.
+- [x] Final GPT-6 Astra/xhigh read-only independent rerun: **no actionable regressions found**; 12 focused tests + 19 additional read-only health/CLI checks passed, with the separate fresh-env full suite at 100/100.
+- [ ] Create final source commit.
+- [ ] Push RC3 source to public GitHub.
+- [ ] Create GitHub Release `v0.1.0rc3`.
+- [ ] Optional fresh live-funds canary, only with separate explicit approval.
+- [ ] Public announcement separately previewed and explicitly confirmed.

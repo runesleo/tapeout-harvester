@@ -128,6 +128,37 @@ unwrap_native = false
         with self.assertRaisesRegex(ValueError, "path collision"):
             replace(cfg, state_path=cfg.wallet_lock_path).validate()
 
+    def test_watcher_identity_covers_runtime_settings_without_changing_cycle_identity(self):
+        cfg = self.load()
+        variants = [
+            replace(cfg, live_enabled=not cfg.live_enabled),
+            replace(cfg, rpc_urls=("https://other.invalid",)),
+            replace(cfg, check_interval_seconds=120),
+        ]
+        for changed in variants:
+            self.assertEqual(changed.cycle_identity_hash(), cfg.cycle_identity_hash())
+            self.assertNotEqual(
+                changed.watcher_identity_hash(),
+                cfg.watcher_identity_hash(),
+            )
+
+    def test_watcher_identity_changes_with_economic_identity(self):
+        cfg = self.load()
+        changed = replace(cfg, minimum_claim=cfg.minimum_claim + 1)
+        self.assertNotEqual(changed.cycle_identity_hash(), cfg.cycle_identity_hash())
+        self.assertNotEqual(
+            changed.watcher_identity_hash(),
+            cfg.watcher_identity_hash(),
+        )
+
+    def test_heartbeat_path_preserves_complete_state_filename(self):
+        cfg = self.load()
+        first = replace(cfg, state_path=cfg.state_path.with_name("state.a"))
+        second = replace(cfg, state_path=cfg.state_path.with_name("state.b"))
+        self.assertNotEqual(first.heartbeat_path, second.heartbeat_path)
+        self.assertEqual(first.heartbeat_path.name, "state.a.heartbeat.json")
+        self.assertEqual(second.heartbeat_path.name, "state.b.heartbeat.json")
+
     def test_receipt_dir_cannot_alias_state_temp_path(self):
         cfg = self.load()
         state_tmp = cfg.state_path.with_suffix(cfg.state_path.suffix + ".tmp")

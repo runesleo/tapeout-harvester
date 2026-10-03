@@ -2,9 +2,24 @@
 
 这是一个从真实 TapeOut/BEM 自动收割流程抽出来的、**fail-closed（不确定就停）** 的本地执行器：可以只自动领取 BEM，也可以在明确配置后，把**本轮 claim 交易实际归因到的钱**按比例卖出。
 
-> 当前版本：`0.1.0rc2`。默认 dry-run。真钱执行必须同时满足 `runtime.live_enabled = true` 和命令行 `--live` 两道开关。
+> 本地候选版本：`0.1.0rc3`（尚未发布）。默认 dry-run。真钱执行必须同时满足 `runtime.live_enabled = true` 和命令行 `--live` 两道开关。
 
 [English](README.md) · [给 AI 的安装说明](AI_SETUP.md) · [安全说明](SECURITY.md)
+
+## RC3 新增：长期运行可靠性
+
+这次不是改资金策略，而是把真实生产里踩到的两个问题补进公开工具：RPC 看似在线但实际 `eth_call` 已坏，以及常驻进程悄悄消失却没有明显信号。
+
+- 选 RPC 时不再只测 chainId / 区块高度，还必须真实读取一次 TapeOut `pending`；当前状态树坏掉的节点会直接跳过。
+- `watch` 每轮重新建立 adapter，不会把几个小时前选中的 RPC 永久钉死。
+- 每轮 watch 都会在 state 旁边写一个脱敏 heartbeat；fatal cycle error 也会留下错误心跳。
+- 新增纯只读 `doctor`：检查 RPC、state/inflight、heartbeat 是否过期；不加载 signer、不广播交易。
+
+```bash
+tapeout-harvester --config config.toml doctor
+```
+
+heartbeat 过期、上一轮 ERROR、执行结果处于 BLOCKED 类状态，或者本地 journal 已持久化为 `BLOCKED_SAFE`，都会明确返回 degraded。heartbeat 写入使用独立阻塞锁，避免多个 watch 实例同时改同一个临时文件。没有 heartbeat 时会显示 `NOT_OBSERVED`，但只有 journal 本身健康时才算整体健康。
 
 ## RC2 解决了什么
 
@@ -122,17 +137,17 @@ tapeout-harvester --config config.toml run --live
 
 ## 已验证
 
-最终 dependency-backed RC2 套件共 **65 个测试**：
+当前本地 RC3 候选套件共 **100 个测试**：
 
 ```text
 Python 3.11.4
 web3 7.16.0
 eth-account 0.14.0
-keyring 25.7.0
-65/65 PASS，0 skip
+keyring 可选能力由测试覆盖；本次验证环境已安装 keyring
+100/100 PASS，0 skip
 ```
 
-覆盖真实依赖 adapter、状态机、restart/unknown outcome、不重放、配置绑定、累计 gas、授权清理、strict bool/int、fsync、文件锁、secure keyring 与 security preflight。最终独立 Codex blocker-focused 复审结果是 **Blockers: None**；更早的三轮分别复现并修掉 8、4、3 个 blocker。完整回执见 `REVIEW-codex-pass.md`。
+覆盖真实依赖 adapter、状态机、restart/unknown outcome、不重放、配置绑定、累计 gas、授权清理、strict bool/int、fsync、文件锁、secure keyring 与 security preflight。RC2 核心执行基线此前已完成独立 Codex blocker-focused 复审，结果为 **Blockers: None**。RC3 九轮 GPT-6 Astra / xhigh 复审累计发现 15 个 P2。第九轮补出 heartbeat 未绑定 watcher 启动配置的问题：配置变更后，旧 watcher 仍可能被新配置的 doctor 误判为健康。现在 heartbeat 已绑定配置 fingerprint。15 项均已修复并补回归测试，完整 100 项测试通过。最终 GPT-6 Astra / xhigh 只读 clean review 未发现可执行回归问题。
 
 ## 当前限制 / 操作边界
 
@@ -146,7 +161,7 @@ keyring 25.7.0
 - 本地共享锁无法约束外部钱包软件。
 - 交易归因依赖标准 ERC-20 `Transfer` 和 wrapped-native `Withdrawal(address,uint256)` 事件语义。
 - web3.py v8 尚未验证。
-- **RC2 没有拿公开包重新跑真钱交易**；当前是 unit/synthetic + 真实 library compatibility 验证。
+- **RC3 目前仍是本地未发布候选**；没有发布 GitHub Release，也没有用 rc3 做新的真钱执行。
 - 已采用 MIT License；GitHub public push 已获 owner 授权，但仍需以远端 readback 作为发布完成证据。
 
 ## License

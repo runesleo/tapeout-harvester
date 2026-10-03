@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tapeout-harvester"
-version = "0.1.0rc2"
+version = "0.1.0rc3"
 description = "Fail-closed TapeOut reward harvester with optional BEM swap and local signing"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -15,7 +15,7 @@ dependencies = [
 
 [project.optional-dependencies]
 keyring = ["keyring>=25,<26"]
-dev = ["build>=1,<2"]
+dev = ["build>=1,<2", "pytest>=8,<10"]
 
 [project.scripts]
 tapeout-harvester = "tapeout_harvester.cli:main"

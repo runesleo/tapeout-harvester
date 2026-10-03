@@ -116,7 +116,12 @@ def atomic_write_json(path: Path, payload: dict[str, Any]) -> None:
 
 
 @contextmanager
-def process_lock(path: Path, *, require_private_parent: bool = False) -> Iterator[None]:
+def process_lock(
+    path: Path,
+    *,
+    require_private_parent: bool = False,
+    blocking: bool = False,
+) -> Iterator[None]:
     if fcntl is None:
         raise RuntimeError("POSIX_FCNTL_REQUIRED")
 
@@ -139,8 +144,9 @@ def process_lock(path: Path, *, require_private_parent: bool = False) -> Iterato
             raise RuntimeError("LOCK_LINK_COUNT_INVALID")
         os.fchmod(fd, 0o600)
 
+        lock_flags = fcntl.LOCK_EX if blocking else (fcntl.LOCK_EX | fcntl.LOCK_NB)
         try:
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(fd, lock_flags)
         except BlockingIOError as exc:
             raise RuntimeError("LOCK_HELD_ANOTHER_INSTANCE") from exc
 

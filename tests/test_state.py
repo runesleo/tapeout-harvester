@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from tapeout_harvester import state as state_module
 from tapeout_harvester.state import atomic_write_json, load_state, process_lock
 
 
@@ -56,6 +57,16 @@ class StateTests(unittest.TestCase):
                 with process_lock(alias):
                     pass
             self.assertEqual(original.read_text(), "keep-me")
+
+    def test_blocking_process_lock_uses_blocking_flock(self):
+        if state_module.fcntl is None:
+            self.skipTest("fcntl unavailable")
+        with tempfile.TemporaryDirectory() as td:
+            lock = Path(td) / "heartbeat.lock"
+            with patch.object(state_module.fcntl, "flock") as flock:
+                with process_lock(lock, blocking=True):
+                    pass
+            self.assertEqual(flock.call_args_list[0].args[1], state_module.fcntl.LOCK_EX)
 
     def test_private_lock_parent_is_owner_only(self):
         with tempfile.TemporaryDirectory() as td:

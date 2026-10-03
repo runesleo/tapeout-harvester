@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented here. The format follows Keep a Changelog.
 
+## [0.1.0rc3] - Unreleased
+
+### Reliability
+- RPC selection now requires a representative TapeOut `pending` contract read, not only `chainId` / latest block. Nodes with a broken current state trie are skipped before use.
+- `watch` rebuilds the adapter every cycle so a provider chosen hours earlier is not pinned forever.
+- `watch` writes a durable, redacted heartbeat next to the state journal after each cycle and on fatal cycle errors; blocked-cycle results are explicitly degraded.
+- Heartbeat writes use a dedicated blocking lock so concurrent watchers cannot race on the shared temporary file.
+- Added a read-only `doctor` command that checks end-to-end RPC reads, terminal/inflight state, persisted `BLOCKED_SAFE` failures, inflight config-identity drift, unresolved receipt timeout/query failures, confirmed reverts, confirmed receipt attribution/allowance invariants, signed-not-broadcast state, blocked results, and heartbeat freshness after RPC probing without loading the signer.
+
+### Verification
+- Added focused tests for representative RPC rejection, heartbeat redaction/serialization, blocked-result degradation, COMPLETE terminal handling, no-heartbeat behavior, and post-RPC stale-heartbeat detection.
+- Nine GPT-6 Astra/xhigh RC3 review passes found fifteen P2 diagnosis/reliability issues in total; all fifteen were remediated. The final independent read-only rerun found no actionable regressions.
+- Local candidate suite after remediation: **100/100 PASS, 0 skipped** in a fresh dependency-backed environment before final clean review.
+- Fresh `.[dev,keyring]` install is self-contained for verification; the `dev` extra now includes pytest.
+- No author production price bands, wallet inventory, reinvest rules, or capital-allocation policy are included.
+
 ## [0.1.0rc2] - 2026-09-20
 
 ### Security

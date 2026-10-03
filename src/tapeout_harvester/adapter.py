@@ -104,6 +104,14 @@ class Web3TapeOutAdapter:
                 if int(w3.eth.chain_id) != config.chain_id:
                     raise RuntimeError("CHAIN_ID_MISMATCH")
                 int(w3.eth.block_number)
+                # A node can answer chainId/blockNumber while its current state trie
+                # is unhealthy. Probe the exact TapeOut read path before selecting it.
+                probe_mining = w3.eth.contract(
+                    address=Web3.to_checksum_address(config.mining_contract),
+                    abi=MINING_ABI,
+                )
+                probe_key = bytes.fromhex(config.miner_keys[0][2:])
+                int(probe_mining.functions.pending(probe_key).call())
                 self.w3 = w3
                 self.rpc_url = url
                 break
@@ -123,6 +131,10 @@ class Web3TapeOutAdapter:
 
         self._transfer_topic = _hex(self.w3.keccak(text="Transfer(address,address,uint256)"))
         self._withdrawal_topic = _hex(self.w3.keccak(text="Withdrawal(address,uint256)"))
+
+    @property
+    def rpc_label(self) -> str:
+        return _safe_rpc_label(self.rpc_url)
 
     def pending_raw(self) -> int:
         return sum(int(self.mining.functions.pending(bytes.fromhex(key[2:])).call()) for key in self.cfg.miner_keys)

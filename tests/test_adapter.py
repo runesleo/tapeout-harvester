@@ -4,6 +4,7 @@ import time
 import unittest
 from decimal import Decimal
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from tapeout_harvester.adapter import Web3TapeOutAdapter, _hex
 from tapeout_harvester.models import Quote
@@ -31,6 +32,70 @@ class AdapterDependencyTests(unittest.TestCase):
         adapter._transfer_topic = _hex(Web3.keccak(text="Transfer(address,address,uint256)"))
         adapter._withdrawal_topic = _hex(Web3.keccak(text="Withdrawal(address,uint256)"))
         return adapter
+
+    def test_selects_rpc_only_after_representative_pending_read(self):
+        class FakeCall:
+            def __init__(self, provider):
+                self.provider = provider
+
+            def call(self, *_args, **_kwargs):
+                if "bad.example" in self.provider:
+                    raise OSError("missing trie node")
+                return 7
+
+        class FakeFunctions:
+            def __init__(self, provider):
+                self.provider = provider
+
+            def pending(self, _key):
+                return FakeCall(self.provider)
+
+        class FakeContract:
+            def __init__(self, provider, address):
+                self.address = address
+                self.functions = FakeFunctions(provider)
+
+        class FakeEth:
+            chain_id = 56
+            block_number = 123
+
+            def __init__(self, provider):
+                self.provider = provider
+
+            def contract(self, address, abi):
+                return FakeContract(self.provider, address)
+
+        class FakeWeb3:
+            def __init__(self, provider):
+                self.provider = provider
+                self.eth = FakeEth(provider)
+                self.middleware_onion = SimpleNamespace(inject=lambda *_args, **_kwargs: None)
+
+            @staticmethod
+            def HTTPProvider(url, request_kwargs=None):
+                return url
+
+            @staticmethod
+            def to_checksum_address(address):
+                return address
+
+            @staticmethod
+            def keccak(text=None):
+                return bytes.fromhex("11" * 32)
+
+        cfg = SimpleNamespace(
+            chain_id=56,
+            rpc_urls=("https://bad.example", "https://good.example"),
+            wallet="0x1111111111111111111111111111111111111111",
+            mining_contract="0x2222222222222222222222222222222222222222",
+            reward_token="0x3333333333333333333333333333333333333333",
+            miner_keys=("0x" + "aa" * 32,),
+            selling_enabled=False,
+        )
+        with patch("web3.Web3", FakeWeb3):
+            adapter = Web3TapeOutAdapter(cfg)
+        self.assertEqual(adapter.rpc_url, "https://good.example")
+        self.assertEqual(adapter.rpc_label, "https://good.example")
 
     def test_decodes_transfer_and_withdrawal_events(self):
         adapter = self.blank_adapter()

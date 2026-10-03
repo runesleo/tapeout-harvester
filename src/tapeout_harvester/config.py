@@ -111,6 +111,14 @@ class HarvesterConfig:
             / f"wallet-{key}.lock"
         )
 
+    @property
+    def heartbeat_path(self) -> Path:
+        return self.state_path.with_name(f"{self.state_path.name}.heartbeat.json")
+
+    @property
+    def heartbeat_lock_path(self) -> Path:
+        return self.heartbeat_path.with_suffix(self.heartbeat_path.suffix + ".lock")
+
     def cycle_identity(self) -> dict[str, Any]:
         return {
             "chain_id": self.chain_id,
@@ -141,6 +149,28 @@ class HarvesterConfig:
 
     def cycle_identity_hash(self) -> str:
         raw = json.dumps(self.cycle_identity(), sort_keys=True, separators=(",", ":")).encode()
+        return hashlib.sha256(raw).hexdigest()
+
+    def watcher_identity(self) -> dict[str, Any]:
+        return {
+            "cycle_identity_hash": self.cycle_identity_hash(),
+            "rpc_urls": list(self.rpc_urls),
+            "check_interval_seconds": self.check_interval_seconds,
+            "receipt_dir": str(self.receipt_dir),
+            "state_path": str(self.state_path),
+            "lock_path": str(self.lock_path),
+            "live_enabled": self.live_enabled,
+            "keystore_path": str(self.keystore_path) if self.keystore_path is not None else None,
+            "keyring_service": self.keyring_service,
+            "keyring_account": self.keyring_account,
+        }
+
+    def watcher_identity_hash(self) -> str:
+        raw = json.dumps(
+            self.watcher_identity(),
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
         return hashlib.sha256(raw).hexdigest()
 
     @classmethod
@@ -232,10 +262,15 @@ class HarvesterConfig:
             raise ValueError("safety.min_confirmations must be positive")
 
         state_tmp = self.state_path.with_suffix(self.state_path.suffix + ".tmp").resolve()
+        heartbeat = self.heartbeat_path.resolve()
+        heartbeat_tmp = heartbeat.with_suffix(heartbeat.suffix + ".tmp")
         files: dict[str, Path] = {
             "config": self.config_path.resolve(),
             "state": self.state_path.resolve(),
             "state_tmp": state_tmp,
+            "heartbeat": heartbeat,
+            "heartbeat_tmp": heartbeat_tmp,
+            "heartbeat_lock": self.heartbeat_lock_path.resolve(),
             "lock": self.lock_path.resolve(),
             "wallet_lock": self.wallet_lock_path.resolve(),
         }

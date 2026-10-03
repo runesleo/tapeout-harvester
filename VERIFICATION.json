@@ -1,52 +1,63 @@
 {
-  "schema": "tapeout-harvester-verification/v3",
-  "version": "0.1.0rc2",
-  "verified_at": "2026-09-20",
-  "production_derivation": {
-    "source_read_via_mcpx": true,
-    "source_sha256": "1d6c021eb8c1d8dbc7fea976d757959bd818e4e9af96525615fb6044fc12cbe4",
-    "source_lines": 1996,
-    "source_bytes": 74035,
+  "schema": "tapeout-harvester-verification/v4",
+  "version": "0.1.0rc3",
+  "candidate_status": "LOCAL_UNPUBLISHED",
+  "verified_at": "2026-10-03",
+  "scope": {
     "production_source_modified": false,
-    "fresh_live_funds_execution_from_public_rc": false
+    "production_service_restarted": false,
+    "signer_loaded_for_rc3_verification": false,
+    "transaction_broadcasts_for_rc3_verification": 0,
+    "fresh_live_funds_execution_from_rc3": false,
+    "private_price_bands_or_capital_policy_in_public_candidate": false
   },
-  "final_release_environment": {
+  "verification_environment": {
     "python": "3.11.4",
     "web3": "7.16.0",
     "eth_account": "0.14.0",
-    "keyring": "25.7.0"
+    "keyring": "INSTALLED_FOR_DEPENDENCY_BACKED_VERIFICATION",
+    "pytest": "9.1.1",
+    "build": "1.6.1"
   },
   "tests": {
-    "discovered": 65,
-    "passed": 65,
+    "discovered": 100,
+    "passed": 100,
     "skipped": 0,
     "status": "PASS"
   },
   "compileall": "PASS",
-  "local_security_preflight": "PASS",
-  "independent_review": {
-    "pass1_blockers": 8,
-    "pass2_blockers": 4,
-    "pass3_blockers": 3,
-    "final_blocker_focused_blockers": 0,
-    "final_warnings": 4,
-    "status": "PASS_WITH_WARNINGS",
-    "receipt": "REVIEW-codex-pass.md"
+  "git_diff_check": "PASS",
+  "local_security_preflight": {
+    "status": "PASS",
+    "exit_code": 0
   },
-  "additional_fault_injection": {
-    "save_boundary_cases": 72,
-    "duplicate_claim_swap_unwrap": 0,
-    "unrelated_wrapped_inventory_consumed": 0
+  "package_smoke": {
+    "loaded_from_wheel": true,
+    "version": "0.1.0rc3",
+    "real_chain_read_only": {
+      "first_candidate": "INTENTIONALLY_UNREACHABLE_LOCAL_RPC",
+      "fallback_selected_rpc": "https://bsc-dataseed.binance.org",
+      "pending_read_ok": true,
+      "status": "OK"
+    },
+    "inflight_config_identity_mismatch": {
+      "state_health": "DEGRADED",
+      "status": "DEGRADED",
+      "reason": "INFLIGHT_CONFIG_IDENTITY_MISMATCH"
+    },
+    "signer_loaded": false,
+    "transaction_broadcasts": 0,
+    "claim_or_sell_executed": false
   },
   "build_artifacts": {
     "wheel": {
-      "filename": "tapeout_harvester-0.1.0rc2-py3-none-any.whl",
-      "sha256": "a1642749dbd6315e92539198167bb0b9831aece55a4aeb64f1594991c2dd85e5",
+      "filename": "tapeout_harvester-0.1.0rc3-py3-none-any.whl",
+      "sha256": "b73c33cd49e29490191ebaa258e5f8e66bea61490c76cdb5e997e2c1e727b2b7",
       "status": "PASS"
     },
     "sdist": {
-      "filename": "tapeout_harvester-0.1.0rc2.tar.gz",
-      "sha256": "6f5873fd47622c3cbebe56fb6ba5f8c6621a8e5e46c1a1ce55742db3966cac94",
+      "filename": "tapeout_harvester-0.1.0rc3.tar.gz",
+      "sha256": "7222428fe574282e2bdf313d352374400960d463dcb8ac088308a40d5269298d",
       "status": "PASS"
     }
   },
@@ -55,18 +66,95 @@
     "eth-account": ">=0.13.7,<0.15",
     "keyring_optional": ">=25,<26"
   },
-  "official_opensource_preflight": {
-    "status": "PASS",
-    "exit_code": 0,
-    "passed_checks": [
-      "no_private_path_patterns",
-      "no_task_ids",
-      "readme_present",
-      "readme_zh_present",
-      "env_gitignored",
-      "no_obvious_git_log_secrets"
-    ],
-    "only_failure": null
+  "rc2_independent_review_baseline": {
+    "final_blocker_focused_blockers": 0,
+    "status": "PASS_WITH_WARNINGS",
+    "receipt": "REVIEW-codex-pass.md"
+  },
+  "rc3_independent_review": {
+    "initial_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 4},
+      "status": "REMEDIATED"
+    },
+    "second_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 1},
+      "topic": "persisted BLOCKED_SAFE journal state omitted from aggregate doctor health",
+      "status": "REMEDIATED"
+    },
+    "third_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 1},
+      "topic": "inflight config identity mismatch omitted from doctor health",
+      "status": "REMEDIATED"
+    },
+    "fourth_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 1},
+      "topic": "unresolved receipt timeout could leave doctor falsely healthy",
+      "status": "REMEDIATED"
+    },
+    "fifth_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 1},
+      "topic": "confirmed successful receipt could leave doctor falsely healthy when deterministic post-receipt attribution invariants fail",
+      "status": "REMEDIATED"
+    },
+    "sixth_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 2},
+      "topic": "doctor snapshot race with a progressing journal; confirmed approval health omitted accepted claim receipt revalidation",
+      "status": "REMEDIATED"
+    },
+    "seventh_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 2},
+      "topic": "cleanup POST_SWAP health omitted accepted swap receipt revalidation before unwrap; heartbeat freshness sampled before slow inflight diagnosis completed",
+      "status": "REMEDIATED"
+    },
+    "eighth_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 2},
+      "topic": "doctor omitted current balances required for pending swap/unwrap recovery; heartbeat path stripped state suffix and could collide across distinct journals",
+      "status": "REMEDIATED"
+    },
+    "ninth_review": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 1},
+      "topic": "heartbeat health was not bound to the watcher's startup configuration fingerprint",
+      "status": "REMEDIATED"
+    },
+    "final_clean_rerun": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "sandbox": "read-only",
+      "findings": {"P1": 0, "P2": 0},
+      "focused_tests_passed": 12,
+      "additional_read_only_health_cli_checks_passed": 19,
+      "manifest_and_packaged_source_checks": "PASS",
+      "full_dependency_backed_suite_separately_verified": "100/100 PASS, 0 skipped",
+      "status": "PASS",
+      "release_gate": "PASS"
+    }
   },
   "license": {
     "spdx": "MIT",
@@ -78,12 +166,13 @@
     "url": "https://github.com/runesleo/tapeout-harvester",
     "visibility": "PUBLIC",
     "default_branch": "main",
-    "initial_public_commit": "46b4d6061d03c90e9c5176e89d2c411c6eecd3c4",
-    "remote_readback": "PASS"
+    "current_public_release": "v0.1.0rc2"
   },
-  "public_release_gates": {
-    "final_license_confirmation": "APPROVED_AND_APPLIED",
-    "public_github_push": "PERFORMED_AND_READBACK_VERIFIED",
+  "rc3_release_gates": {
+    "source_commit": "NOT_CREATED",
+    "public_github_push": "NOT_PERFORMED",
+    "github_release": "NOT_PERFORMED",
+    "fresh_live_funds_canary": "NOT_PERFORMED",
     "public_announcement": "NOT_PERFORMED"
   }
 }
