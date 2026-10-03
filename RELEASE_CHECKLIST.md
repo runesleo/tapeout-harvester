@@ -26,8 +26,8 @@
 - [x] Eighth GPT-6 Astra/xhigh RC3 review completed: 2 additional P2 monitoring findings (current reward/wrapped balance prerequisites + heartbeat path collision across state suffixes), remediated with regression tests.
 - [x] Ninth GPT-6 Astra/xhigh RC3 review completed: 1 additional P2 stale-watcher configuration identity finding, remediated by binding heartbeat health to the watcher configuration fingerprint.
 - [x] Final GPT-6 Astra/xhigh read-only independent rerun: **no actionable regressions found**; 12 focused tests + 19 additional read-only health/CLI checks passed, with the separate fresh-env full suite at 100/100.
-- [ ] Create final source commit.
-- [ ] Push RC3 source to public GitHub.
-- [ ] Create GitHub Release `v0.1.0rc3`.
+- [x] Final source commit created: `d9b3df74a70e666785a8d24024454042a4333d19`.
+- [x] RC3 source pushed to public GitHub `main`; remote readback matched `d9b3df74a70e666785a8d24024454042a4333d19`.
+- [x] GitHub Release `v0.1.0rc3` published as prerelease and read back targeting `d9b3df74a70e666785a8d24024454042a4333d19`.
 - [ ] Optional fresh live-funds canary, only with separate explicit approval.
-- [ ] Public announcement separately previewed and explicitly confirmed.
+- [x] Public announcement copy/visual previewed; user chose to schedule it independently outside this repository release flow.

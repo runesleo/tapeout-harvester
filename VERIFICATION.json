@@ -1,7 +1,7 @@
 {
   "schema": "tapeout-harvester-verification/v4",
   "version": "0.1.0rc3",
-  "candidate_status": "LOCAL_UNPUBLISHED",
+  "candidate_status": "PUBLIC_PRERELEASE",
   "verified_at": "2026-10-03",
   "scope": {
     "production_source_modified": false,
@@ -166,13 +166,21 @@
     "url": "https://github.com/runesleo/tapeout-harvester",
     "visibility": "PUBLIC",
     "default_branch": "main",
-    "current_public_release": "v0.1.0rc2"
+    "current_public_release": "v0.1.0rc3"
   },
   "rc3_release_gates": {
-    "source_commit": "NOT_CREATED",
-    "public_github_push": "NOT_PERFORMED",
-    "github_release": "NOT_PERFORMED",
+    "source_commit": "d9b3df74a70e666785a8d24024454042a4333d19",
+    "public_github_push": "PERFORMED_AND_REMOTE_MAIN_READBACK_VERIFIED",
+    "github_release": {
+      "tag": "v0.1.0rc3",
+      "url": "https://github.com/runesleo/tapeout-harvester/releases/tag/v0.1.0rc3",
+      "target_commit": "d9b3df74a70e666785a8d24024454042a4333d19",
+      "draft": false,
+      "prerelease": true,
+      "published_at": "2026-10-03T11:16:40Z",
+      "status": "PUBLISHED_AND_READBACK_VERIFIED"
+    },
     "fresh_live_funds_canary": "NOT_PERFORMED",
-    "public_announcement": "NOT_PERFORMED"
+    "public_announcement": "USER_SCHEDULED_EXTERNALLY_NOT_EXECUTED_BY_THIS_REPO_FLOW"
   }
 }
